@@ -101,11 +101,13 @@ def is_valid_value(field_name, value):
                 return False
             return True
         case 'hgt':
+            if len(value) < 3:
+                return False
             if value.find('cm') != -1:
                 n = int(value[:-2])
                 if n < 150 or n > 193:
                     return False
-            elif value.find('in'):
+            elif value.find('in') != 1:
                 n = int(value[:-2])
                 if n < 59 or n > 76:
                     return False
@@ -158,7 +160,7 @@ def tally_valid_passports(filename):
     print(f'Total valid passports: {valid_passport_tally}')
     return valid_passport_tally
 
-print(tally_valid_passports('Day_04.py'))
+print(tally_valid_passports('Day_04.txt'))
 
 class TestFieldValidation(unittest.TestCase):
     def test_field_validation(self):
