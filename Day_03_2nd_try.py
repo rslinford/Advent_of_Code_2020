@@ -9,11 +9,13 @@ Right 1, down 2.
 5872458240 is Right! yay
 """
 
+
 def load_puzzle_data(filename):
     lines = None
     with open(filename, 'r') as f:
         lines = f.read().split('\n')
     return lines
+
 
 def run():
     data = load_puzzle_data('Day_03.txt')
@@ -43,5 +45,5 @@ def run():
 
     print('Answer', answer)
 
-run()
 
+run()
