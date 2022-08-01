@@ -21,11 +21,23 @@ def part1():
         yes_tally += n
     print(f'Yes tally {yes_tally}')
 
-def part1():
+def part2():
     filename = 'Day_06_data.txt'
     groups = read_groups(filename)
-    s = set()
-    for i, group in enumerate(groups):
-        if i == 0:
-            for c in
+
+    tally = 0
+    for group in groups:
+        group_member_list = group.split('\n')
+        s = set()
+        for i, group_member in enumerate(group_member_list):
+            if i == 0:
+                for c in group_member:
+                    s.add(c)
+            else:
+                t = set()
+                for c in group_member:
+                    t.add(c)
+                s = s.intersection(t)
+        tally += len(s)
+    print(f'The answer is {tally}')
 part2()
