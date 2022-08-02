@@ -13,8 +13,10 @@ def read_initial_slice(filename):
 
 def render_grid(grid):
     rval = []
-    for row in grid:
-        rval.append(''.join(row))
+    for slice in grid:
+        for row in slice:
+            rval.append(''.join(row))
+            rval.append('\n')
         rval.append('\n')
     return ''.join(rval)
 
@@ -22,17 +24,19 @@ def blank_padding(grid):
     padding = []
     width = len(grid[0]) * 10
     height = len(grid) * 10
-    return buffer_grid(width, height)
+    depth = 5
+    return buffer_grid(width, height, depth)
 
-def buffer_grid(width, height):
-    return [['.' for _ in range(width)] for _ in range(height)]
+def buffer_grid(width, height, depth):
+    return [[['.' for _ in range(width)] for _ in range(height)] for _ in range(depth)]
 
 def draw_grid_on_padding(grid, padding):
     x_offset = 4 * len(grid[0])
     y_offset = 4 * len(grid)
+    z_offset = 1
     for y, row in enumerate(grid):
         for x, c in enumerate(row):
-            padding[y + y_offset][x + x_offset] = grid[y][x]
+            padding[z_offset][y + y_offset][x + x_offset] = grid[y][x]
 
 offsets = [
     (-1, -1), (0, -1), (1, -1),
@@ -40,27 +44,30 @@ offsets = [
     (-1, 1),  (0, 1),  (1, 1)]
 
 def one_generation(grid):
-    buffer = buffer_grid(len(grid[0]), len(grid))
-    for y in range(1, len(grid) - 1):
-        for x in range(1, len(grid[0]) - 1):
-            current_is_active = grid[y][x] == '#'
-            # count active adjacent squares
-            adjacent_active = 0
-            for o in offsets:
-                if grid[y-o[1]][x-o[0]] == '#':
-                    adjacent_active += 1
-            # if adjacent_active > 0 or current_is_active:
-            #     print(f'({x}, {y}) active({current_is_active}) and has {adjacent_active} active neighbors.')
-            if current_is_active:
-                if adjacent_active != 2 and adjacent_active != 3:
-                    buffer[y][x] = '.'
+    print(grid)
+    buffer = buffer_grid(len(grid[0]), len(grid), 5)
+    for z in range(1, len(grid) - 1):
+        for y in range(1, len(grid[0]) - 1):
+            for x in range(1, len(grid[0][0]) - 1):
+                current_is_active = grid[z][y][x] == '#'
+                # count active adjacent squares
+                adjacent_active = 0
+                for o in offsets:
+                    if grid[z][y-o[1]][x-o[0]] == '#':
+                        adjacent_active += 1
+                # if adjacent_active > 0 or current_is_active:
+                #     print(f'({x}, {y}) active({current_is_active}) and has {adjacent_active} active neighbors.')
+                if current_is_active:
+                    if adjacent_active != 2 and adjacent_active != 3:
+                        buffer[z][y][x] = '.'
+                    else:
+                        buffer[z][y][x] = '#'
                 else:
-                    buffer[y][x] = '#'
-            else:
-                if adjacent_active == 3:
-                    buffer[y][x] = '#'
-                else:
-                    buffer[y][x] = '.'
+                    if adjacent_active == 3:
+                        buffer[z][y][x] = '#'
+                    else:
+                        print(x, y, z)
+                        buffer[z][y][x] = '.'
     return buffer
 
 
