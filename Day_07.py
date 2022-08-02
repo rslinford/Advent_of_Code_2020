@@ -78,7 +78,7 @@ def load_bag_hierarchy(filename):
                 parent_bag.add_child(bag_factory(rlist[index], rlist[index + 1]), int(rlist[index - 1]))
                 # todo add as child
                 index += 4
-        print(f'Created {parent_bag} with children: {parent_bag.render_children()}')
+        # print(f'Created {parent_bag} with children: {parent_bag.render_children()}')
 
 
 def part1(filename):
@@ -87,28 +87,15 @@ def part1(filename):
     for fancy_color in Bag.instances.keys():
         if bag_can_contain_shiny_gold(fancy_color):
             tally += 1
-        print(f'Bag {fancy_color}  can contain "shiny gold": {bag_can_contain_shiny_gold(fancy_color)}')
+        # print(f'Bag {fancy_color}  can contain "shiny gold": {bag_can_contain_shiny_gold(fancy_color)}')
     print(f'Number of bags that can eventually contain "shiny gold": {tally}')
     if filename == 'Day_07_small_data.txt':
         assert (tally == 4)
     elif filename == 'Day_07_data.txt':
         assert (tally == 172)
 
-def tally_contains(bag):
-    tally = 0
-    for child in bag.children.keys():
-        contains_count = bag.children[child]
-        child_count = tally_contains(child)
-        if child_count != 0:
-            tally += contains_count * child_count
-    return tally
-
-def part2(filename):
-    load_bag_hierarchy(filename)
-    gold_bag = bag_factory('shiny', 'gold')
-    print(f'Number of bags shiny gold bag must contain:  {tally_contains(gold_bag)}')
 
 
 
 # part1('Day_07_small_data.txt')
-part2('Day_07_small_data.txt')
+part1('Day_07_small_data.txt')
