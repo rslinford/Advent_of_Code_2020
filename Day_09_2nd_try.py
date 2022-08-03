@@ -99,7 +99,7 @@ def render_grid(grid):
 
 
 def part1():
-    grid = read_initial_state('Day_09_short_data.txt')
+    grid = read_initial_state('Day_09_data.txt')
     print('Initial state')
     print(render_grid(grid))
     grid = perform_cycle(grid)
