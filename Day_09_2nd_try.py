@@ -30,12 +30,98 @@ def read_initial_state(filename):
         grid = grow_grid(grid)
         return grid
 
+offsets = [
+    (-1, -1, -1), (-1, -1, 0), (-1, -1, 1),
+    (-1, 0, -1),  (-1, 0, 0),  (-1, 0, 1),
+    (-1, 1, -1),  (-1, 1, 0),  (-1, 1, 1),
+
+    (0, -1, -1),  (0, -1, 0), (0, -1, 1),
+    (0, 0, -1),               (0, 0, 1),
+    (0, 1, -1),   (0, 1, 0),  (0, 1, 1),
+
+    (1, -1, -1),  (1, -1, 0), (1, -1, 1),
+    (1, 0, -1),   (1, 0, 0),  (1, 0, 1),
+    (1, 1, -1),   (1, 1, 0),  (1, 1, 1),
+]
+
+def tally_active_neighbors(grid, z, y, x):
+    tally = 0
+    for offset in offsets:
+        if grid[z + offset[0]][y + offset[1]][x + offset[2]] == 1:
+            tally += 1
+    return tally
+
+def perform_cycle(grid):
+    grid = grow_grid(grid)
+    r_grid = np.zeros(grid.shape, dtype=int)
+    for z in range(1, grid.shape[0] - 1):
+        for y in range(1, grid.shape[1] - 1):
+            for x in range(1, grid.shape[2] - 1):
+                tally = tally_active_neighbors(grid, z, y, x)
+                is_active = grid[z][y][x] == 1
+                if is_active:
+                    if tally == 2 or tally == 3:
+                        r_grid[z][y][x] = 1
+                    else:
+                        r_grid[z][y][x] = 0
+                else:
+                    if tally == 3:
+                        r_grid[z][y][x] = 1
+                    else:
+                        r_grid[z][y][x] = 0
+
+    return r_grid
+
+def perform_six_cycles(grid):
+    for _ in range(6):
+        grid = perform_cycle(grid)
+
+    print(f'Total active after 6 cycles: {grid.sum()}')
+    return grid
 
 def grow_grid(grid):
     return np.pad(grid, ((1, 1), (1, 1), (1, 1)), 'constant')
 
+
+def render_grid(grid):
+    rval = []
+    for z in range(0, grid.shape[0]):
+        rval.append(f'z = {z}\n')
+        for y in range(0, grid.shape[1]):
+            for x in range(0, grid.shape[2]):
+                if grid[z][y][x] == 1:
+                    rval.append('#')
+                else:
+                    rval.append('.')
+            rval.append('\n')
+        rval.append('\n')
+    return ''.join(rval)
+
+
 def part1():
-    slice = read_initial_state('Day_09_short_data.txt')
+    grid = read_initial_state('Day_09_short_data.txt')
+    print('Initial state')
+    print(render_grid(grid))
+    grid = perform_cycle(grid)
+    print('Cycle 1')
+    print(render_grid(grid))
+    grid = perform_cycle(grid)
+    print('Cycle 2')
+    print(render_grid(grid))
+    grid = perform_cycle(grid)
+    print('Cycle 3')
+    print(render_grid(grid))
+    grid = perform_cycle(grid)
+    print('Cycle 4')
+    print(render_grid(grid))
+    grid = perform_cycle(grid)
+    print('Cycle 5')
+    print(render_grid(grid))
+    grid = perform_cycle(grid)
+    print('Cycle 6')
+    print(render_grid(grid))
+    print(f'Total active after 6 cycles: {grid.sum()}')
+
 
 part1()
 
@@ -49,7 +135,6 @@ class TestConway(unittest.TestCase):
         grid = read_initial_state('Day_09_short_data_2.txt')
         self.assertEqual((3, 5, 5), grid.shape)
         self.assertEqual(1, grid[1][3][3])
-        print(grid)
 
     def test_grow_grid(self):
         grid = read_initial_state('Day_09_short_data_2.txt')
@@ -57,9 +142,30 @@ class TestConway(unittest.TestCase):
         self.assertEqual(0, grid[1][0][0])
         self.assertEqual(1, grid[1][1][1])
         grid = grow_grid(grid)
-        print(grid)
         self.assertEqual((5, 7, 7), grid.shape)
         self.assertEqual(0, grid[2][1][1])
         self.assertEqual(1, grid[2][2][2])
         self.assertEqual(1, grid[2][4][2])
 
+    def test_perform_cycle(self):
+        grid = read_initial_state('Day_09_short_data.txt')
+        grid = perform_cycle(grid)
+        self.assertEqual(0, grid[1][1][1])
+        self.assertEqual(1, grid[1][3][2])
+        self.assertEqual(0, grid[0][1][1])
+        self.assertEqual(0, grid[0][2][1])
+        self.assertTrue(grid.any())
+
+    def test_perform_six_cycle(self):
+        grid = read_initial_state('Day_09_short_data.txt')
+        grid = perform_six_cycles(grid)
+        self.assertTrue(112, grid.sum())
+
+    def test_tally_active_neighbors(self):
+        grid = read_initial_state('Day_09_short_data_2.txt')
+        tally = tally_active_neighbors(grid, 1, 0, 0)
+        self.assertEqual(1, tally)
+        tally = tally_active_neighbors(grid, 1, 2, 2)
+        self.assertEqual(8, tally)
+        tally = tally_active_neighbors(grid, 1, 3, 1)
+        self.assertEqual(2, tally)
