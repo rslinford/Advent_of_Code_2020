@@ -72,7 +72,7 @@ def one_generation(grid):
 
 
 def part1():
-    original_grid  = read_initial_slice('Day_09_short_data.txt')
+    original_grid  = read_initial_slice('Day_17_short_data.txt')
     grid = blank_padding(original_grid)
     draw_grid_on_padding(original_grid, grid)
     print('Generation 0\n' + render_grid(grid))

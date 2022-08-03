@@ -127,7 +127,7 @@ def render_grid(grid):
 
 
 def part1():
-    grid = read_initial_state('Day_09_data.txt')
+    grid = read_initial_state('Day_17_data.txt')
     print('Initial state')
     print(render_grid(grid))
     grid = perform_cycle(grid)
@@ -155,17 +155,17 @@ part1()
 
 class TestConway(unittest.TestCase):
     def test_read_dimensions(self):
-        width, height = read_dimensions('Day_09_short_data.txt')
+        width, height = read_dimensions('Day_17_short_data.txt')
         self.assertEqual(3, width)
         self.assertEqual(3, height)
 
     def test_read_initial_state(self):
-        grid = read_initial_state('Day_09_short_data_2.txt')
+        grid = read_initial_state('Day_17_short_data_2.txt')
         self.assertEqual((3, 3, 5, 5), grid.shape)
         self.assertEqual(1, grid[1][1][3][3])
 
     def test_grow_grid(self):
-        grid = read_initial_state('Day_09_short_data_2.txt')
+        grid = read_initial_state('Day_17_short_data_2.txt')
         self.assertEqual((3, 3, 5, 5), grid.shape)
         self.assertEqual(0, grid[1][1][0][0])
         self.assertEqual(1, grid[1][1][1][1])
@@ -176,7 +176,7 @@ class TestConway(unittest.TestCase):
         self.assertEqual(0, grid[1][2][4][2])
 
     def test_perform_cycle(self):
-        grid = read_initial_state('Day_09_short_data.txt')
+        grid = read_initial_state('Day_17_short_data.txt')
         grid = perform_cycle(grid)
         self.assertEqual(0, grid[1][1][1][1])
         self.assertEqual(1, grid[1][1][3][2])
@@ -185,12 +185,12 @@ class TestConway(unittest.TestCase):
         self.assertTrue(grid.any())
 
     def test_perform_six_cycle(self):
-        grid = read_initial_state('Day_09_short_data.txt')
+        grid = read_initial_state('Day_17_short_data.txt')
         grid = perform_six_cycles(grid)
         self.assertTrue(112, grid.sum())
 
     def test_tally_active_neighbors(self):
-        grid = read_initial_state('Day_09_short_data_2.txt')
+        grid = read_initial_state('Day_17_short_data_2.txt')
         tally = tally_active_neighbors(grid, 1, 1, 0, 0)
         self.assertEqual(1, tally)
         tally = tally_active_neighbors(grid, 1, 1, 2, 2)
